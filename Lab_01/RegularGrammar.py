@@ -13,8 +13,8 @@ class FiniteAutomaton:
         pass
 
     def string_belong_to_language(self, input_string) -> tuple:
-        # # Checking if some characters aren't in Q or Sigma so that we can return false immediately
         backup_string = input_string
+
         while input_string != "":
             if "aaa" in input_string:
                 input_string = input_string.replace("aaa", "")
@@ -26,6 +26,7 @@ class FiniteAutomaton:
                 return False, []
         creation_transitions = self.generate_transitions_to_create_word(backup_string)
         return True, creation_transitions
+
 
     def generate_transitions_to_create_word(self, input_string) -> []:
         created_transitions_test = []
@@ -78,6 +79,42 @@ class Grammar:
         return generated_string, creation_transitions
 
 
+    def classify_grammar(self) -> str:
+        left_side = re.compile(r'(.+)(?=\-\>)')
+        right_side = re.compile(r'->(.+)$')
+        left_side_chars = []
+        right_side_chars = []
+        for tran in self.P:
+            left_side_chars.append(left_side.search(tran).group(1))
+            right_side_chars.append(right_side.search(tran).group(1))
+
+        # Checking if the grammar has left-side elements that have terminals or have a length greater than 1
+        if not(any(char in chars for char in self.VT for chars in left_side_chars) or any(len(ch) > 1 for ch in left_side_chars)):
+            right = False
+            left = False
+
+            for chars in right_side_chars:
+                # Checking right side for >1 VN or VT
+                if sum(ch in self.VN for ch in chars) > 1 or sum(ch in self.VT for ch in chars) > 1:
+                    break
+                # Checking if the first character is in VN or VT and determining the subtype of the grammar
+                if chars[0] in self.VN and len(chars) > 1:
+                    right = True
+                if chars[0] in self.VT and len(chars) > 1:
+                    left = True
+            # XOR to determine if we have left or right grammar
+            if left ^ right:
+                return("Type 3")
+            # If it's not, then it's a combination of the two, meaning it's type two
+            else:
+                return("Type 2")
+        # Type 1 grammar cannot have terminal symbols on the left
+        elif " " not in right_side_chars and not(any(char in chars for char in self.VT for chars in left_side_chars)):
+            return("Type 1")
+        # Otherwise, it's just type 0
+        else:
+            return("Type 0")
+
     def finite_automaton_conversion(self) -> FiniteAutomaton:
         finite_automaton = FiniteAutomaton()
         # Start state
@@ -95,23 +132,26 @@ class Grammar:
 
 
 grammar = Grammar()
-string = []
-transitions = []
-while len(string) < 5:
-    temp = grammar.generate_string()
-    temp_str, temp_trans = temp
-    if temp_str not in string:
-        string.append(temp_str)
-        transitions.append(temp_trans)
-
-for i in range(len(string)):
-    print("Generated string[" + str(i + 1) + "] = " + str(string[i]))
-    print("Transitions to generate the string: " + str(transitions[i]))
-
-string_to_check = "abababaabababaaa"
-finite_automaton = grammar.finite_automaton_conversion()
-truth, transitions = finite_automaton.string_belong_to_language(string_to_check)
-print("\nIs the string = [" + string_to_check + "] valid for the language? ")
-print(truth)
-print("Transitions for obtaining the word: " + str(transitions))
-
+result = grammar.classify_grammar()
+print(result)
+# string = []
+# transitions = []
+# while len(string) < 5:
+#     temp = grammar.generate_string()
+#     temp_str, temp_trans = temp
+#     if temp_str not in string:
+#         string.append(temp_str)
+#         transitions.append(temp_trans)
+#
+# for i in range(len(string)):
+#     print("Generated string[" + str(i + 1) + "] = " + str(string[i]))
+#     print("Transitions to generate the string: " + str(transitions[i]))
+#
+# strings_to_check = ["abababaabababaaa", "aaa", "c", "abbaaa"]
+# finite_automaton = grammar.finite_automaton_conversion()
+# for i in range(len(strings_to_check)):
+#     truth, transitions = finite_automaton.string_belong_to_language(strings_to_check[i])
+#     print("\nIs the string = [" + strings_to_check[i] + "] valid for the language? ")
+#     print(truth)
+#     if truth:
+#         print("Transitions for obtaining the word: " + str(transitions))
