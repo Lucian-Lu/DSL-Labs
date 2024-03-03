@@ -216,8 +216,8 @@ class FiniteAutomaton:
         pos = nx.planar_layout(graph)
         labels = nx.get_edge_attributes(graph, 'label')
         # Drawing the graph
-        nx.draw(graph, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=8)
-        nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels, font_color='red', font_size=12)
+        nx.draw(graph, pos, with_labels=True, node_size=700, node_color="purple", font_size=8)
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels, font_color='black', font_size=12)
         plt.show()
 
 
