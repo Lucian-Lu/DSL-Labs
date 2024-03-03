@@ -105,10 +105,10 @@ class Grammar:
             # XOR to determine if we have left or right grammar
             if left ^ right:
                 return("Type 3")
-            # If it's not, then it's a combination of the two, meaning it's type two
+        # If not, then it's a combination of the two, meaning it's type two grammar
             else:
                 return("Type 2")
-        # Type 1 grammar cannot have terminal symbols on the left
+        # Type 1 grammar cannot have terminal symbols on the left and can't have an empty string on the right
         elif " " not in right_side_chars and not(any(char in chars for char in self.VT for chars in left_side_chars)):
             return("Type 1")
         # Otherwise, it's just type 0
