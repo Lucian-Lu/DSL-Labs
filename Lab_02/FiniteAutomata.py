@@ -23,16 +23,16 @@ class FiniteAutomaton:
     Delta = {}
 
     def __init__(self):
-        self.Q = ["q0", "q1", "q2", "q3"]
-        self.Sigma = ["a", "b", "c"]
-        self.q0 = "q0"
-        self.F = "q3"
-        self.Delta = {
-            "q0": ["a q0", "a q1"],
-            "q1": ["b q2"],
-            "q2": ["a q2", "b q3"],
-            "q3": ["a q3"]
-        }
+        # self.Q = ["q0", "q1", "q2", "q3"]
+        # self.Sigma = ["a", "b", "c"]
+        # self.q0 = "q0"
+        # self.F = "q3"
+        # self.Delta = {
+        #     "q0": ["a q0", "a q1"],
+        #     "q1": ["b q2"],
+        #     "q2": ["a q2", "b q3"],
+        #     "q3": ["a q3"]
+        # }
         # Other test cases
         # self.Q = ["q0", "q1", "q2"]
         # self.Sigma = ["a", "b"]
@@ -43,17 +43,17 @@ class FiniteAutomaton:
         #     "q1": ["a q2", "b q1"],
         #     "q2": ["a q2", "b q2"]
         # }
-        # self.Q = ["q0", "q1", "q2", "q3", "q4"]
-        # self.Sigma = ["a", "b"]
-        # self.q0 = "q0"
-        # self.F = "q4"
-        # self.Delta = {
-        #     "q0": ["a q1"],
-        #     "q1": ["b q1", "a q2"],
-        #     "q2": ["b q2", "b q3"],
-        #     "q3": ["b q4", "a q1"],
-        #     "q4": []
-        # }
+        self.Q = ["q0", "q1", "q2", "q3", "q4"]
+        self.Sigma = ["a", "b"]
+        self.q0 = "q0"
+        self.F = "q4"
+        self.Delta = {
+            "q0": ["a q1"],
+            "q1": ["b q1", "a q2"],
+            "q2": ["b q2", "b q3"],
+            "q3": ["b q4", "a q1"],
+            "q4": []
+        }
 
     def is_deterministic(self) -> bool:
         for state, transitions in self.Delta.items():
