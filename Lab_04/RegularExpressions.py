@@ -2,7 +2,7 @@ import random
 # Variant 3
 
 
-def generate_regular_expression(nr, limit):
+def generate_words_from_regex(nr, limit):
     string = ""
     counter = 0
     if nr == 1:
@@ -188,5 +188,5 @@ def parse_regular_expression(regex):
 # O(P|Q|R)+2(3|4)
 # A*B(C|D|E)E(G|H|i)^2
 # J+K(L|M|N)*O?(P|Q)^3
-print(generate_regular_expression(3, 5))
+print(generate_words_from_regex(1, 5))
 print(parse_regular_expression("O(P|Q|R)+2(3|4)"))
