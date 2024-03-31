@@ -83,9 +83,11 @@ def generate_words_from_regex(nr, limit):
 def parse_regular_expression(regex):
     string = ""
     i = 0
+    sequence = []
     while i < len(regex):
         current = ""
         if regex[i] == '(':
+            sequence.append('(')
             while i < len(regex) and regex[i] != ')':
                 current += regex[i]
                 i += 1
@@ -93,6 +95,7 @@ def parse_regular_expression(regex):
                 current += regex[i]
             else:
                 return "Error: ')' is missing"
+            sequence.append(')')
             if not(i == len(regex)):
                 i += 1
 
@@ -100,24 +103,31 @@ def parse_regular_expression(regex):
                 symbols = [ch for ch in current if ch not in "()|"]
                 rand = random.randint(0, len(symbols)-1)
                 string += symbols[rand]
+                sequence.append(symbols[rand])
 
             elif regex[i] == "*":
+                sequence.append("*")
                 symbols = [ch for ch in current if ch not in "()|"]
                 rng = random.random()
                 while rng > 0.25:
                     rand = random.randint(0, len(symbols)-1)
                     string += symbols[rand]
                     rng = random.random()
+                    sequence.append(symbols[rand])
                 i += 1
 
             elif regex[i] == "?":
+                sequence.append("?")
                 symbols = [ch for ch in current if ch not in "()|"]
                 rng = random.random()
                 if rng > 0.5:
                     rand = random.randint(0, len(symbols)-1)
                     string += symbols[rand]
+                    sequence.append(symbols[rand])
                 i += 1
+
             elif regex[i] == "+":
+                sequence.append("+")
                 symbols = [ch for ch in current if ch not in "()|"]
                 rng = random.random()
                 while rng <= 0.25:
@@ -126,17 +136,21 @@ def parse_regular_expression(regex):
                     rand = random.randint(0, len(symbols)-1)
                     string += symbols[rand]
                     rng = random.random()
+                    sequence.append(symbols[rand])
                 i += 1
             elif regex[i] == "^":
+                sequence.append("^")
                 symbols = [ch for ch in current if ch not in "()|"]
                 rand = random.randint(0, len(symbols)-1)
                 string += symbols[rand] * int(regex[i+1])
+                sequence.append(symbols[rand]*int(regex[i+1]))
                 i += 2
 
             elif regex[i] not in "*+?^":
                 symbols = [ch for ch in current if ch not in "()|"]
                 rand = random.randint(0, len(symbols) - 1)
                 string += symbols[rand]
+                sequence.append(symbols[rand])
 
             else:
                 print('Error at character' + regex[i])
@@ -146,34 +160,44 @@ def parse_regular_expression(regex):
             if i+1 < len(regex):
                 if regex[i+1] not in "*+?^":
                     string += regex[i]
+                    sequence.append(regex[i])
                     i += 1
                 elif regex[i+1] == "*":
+                    sequence.append("*")
                     rand = random.random()
                     while rand > 0.333:
                         string += regex[i]
+                        sequence.append(regex[i])
                         rand = random.random()
                     i += 1
                 elif regex[i+1] == "+":
+                    sequence.append("+")
                     rand = random.random()
                     while rand <= 0.333:
                         rand = random.random()
                     while rand > 0.333:
                         string += regex[i]
+                        sequence.append(regex[i])
                         rand = random.random()
                     i += 1
                 elif regex[i+1] == "?":
+                    sequence.append("?")
                     rand = random.random()
                     if rand > 0.5:
                         string += regex[i]
+                        sequence.append(regex[i])
                     i += 1
                 elif regex[i+1] == "^":
+                    sequence.append("^")
                     string += regex[i] * regex[i+2]
+                    sequence.append(regex[i] * regex[i+2])
                     i += 2
                 else:
                     print('Error at character' + regex[i])
                     return "Error"
             else:
                 string += regex[i]
+                sequence.append(regex[i])
                 i += 1
         elif regex[i] in "*+?^":
             i += 1
@@ -182,7 +206,7 @@ def parse_regular_expression(regex):
             print('Error at character' + regex[i])
             return "Invalid expression"
 
-    return string
+    return string, sequence
 
 
 # O(P|Q|R)+2(3|4)
