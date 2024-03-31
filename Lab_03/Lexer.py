@@ -322,5 +322,5 @@ def run(fn, text):
     return ast.node, ast.error
 
 
-lexer = run("test", "5 + 3 * 20 + 4 + 3 * 3 * 2 * 1")
+lexer = run("test", "5 + 43 + 32 + ((4 * 3) + 3)")
 print(lexer)
