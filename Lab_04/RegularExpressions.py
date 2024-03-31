@@ -1,14 +1,11 @@
 import random
-# Variant 3:
-# O(P|Q|R)+ 2(3|4)
-# A*B(C|D|E)E(G|H|i)^2
-# J+K(L|M|N)*O?(P|Q)^3
+# Variant 3
 
 
 def generate_regular_expression(nr, limit):
     string = ""
     counter = 0
-    if (nr == 1):
+    if nr == 1:
         string += "O"
         rand = random.random()
         while rand <= 0.25:
@@ -30,8 +27,7 @@ def generate_regular_expression(nr, limit):
         else:
             string += "4"
         return string
-    elif (nr == 2):
-        # A*B(C|D|E)E(G|H|i)^2
+    elif nr == 2:
         rand = random.random()
         while rand > 0.33 and counter < limit:
             counter += 1
@@ -54,8 +50,7 @@ def generate_regular_expression(nr, limit):
         else:
             string += "ii"
         return string
-    elif (nr == 3):
-        # J+K(L|M|N)*O?(P|Q)^3
+    elif nr == 3:
         string += "J"
         rand = random.random()
         while rand > 0.3333 and counter < limit:
@@ -86,10 +81,6 @@ def generate_regular_expression(nr, limit):
 
 
 def parse_regular_expression(regex):
-    # O(P|Q|R)+2(3|4)
-    # A*B(C|D|E)E(G|H|i)^2
-    # J+K(L|M|N)*O?(P|Q)^3
-    symbols = []
     string = ""
     i = 0
     while i < len(regex):
@@ -102,10 +93,8 @@ def parse_regular_expression(regex):
                 current += regex[i]
             else:
                 return "Error: ')' is missing"
-
-            if i+1 <= len(regex)-1:
-                if regex[i+1] in "*+?^":
-                    i += 1
+            if not(i == len(regex)):
+                i += 1
 
             if i == len(regex):
                 symbols = [ch for ch in current if ch not in "()|"]
@@ -143,9 +132,14 @@ def parse_regular_expression(regex):
                 rand = random.randint(0, len(symbols)-1)
                 string += symbols[rand] * int(regex[i+1])
                 i += 2
+
+            elif regex[i] not in "*+?^":
+                symbols = [ch for ch in current if ch not in "()|"]
+                rand = random.randint(0, len(symbols) - 1)
+                string += symbols[rand]
+
             else:
-                print(string)
-                print(regex[i])
+                print('Error at character' + regex[i])
                 return "Error"
 
         elif regex[i] not in "*+?^":
@@ -176,15 +170,16 @@ def parse_regular_expression(regex):
                     string += regex[i] * regex[i+2]
                     i += 2
                 else:
-                    print(regex[i])
+                    print('Error at character' + regex[i])
                     return "Error"
             else:
                 string += regex[i]
+                i += 1
         elif regex[i] in "*+?^":
             i += 1
             continue
         else:
-            print(regex[i])
+            print('Error at character' + regex[i])
             return "Invalid expression"
 
     return string
@@ -193,5 +188,5 @@ def parse_regular_expression(regex):
 # O(P|Q|R)+2(3|4)
 # A*B(C|D|E)E(G|H|i)^2
 # J+K(L|M|N)*O?(P|Q)^3
-# print(generate_regular_expression(3, 5))
-print(parse_regular_expression("A*B(C|D|E)E"))
+print(generate_regular_expression(3, 5))
+print(parse_regular_expression("O(P|Q|R)+2(3|4)"))
