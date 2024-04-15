@@ -4,16 +4,10 @@ class ChomskyNormalForm:
     Vt = []
     P = {}
 
-    def __init__(self):
-        self.Vn = ["S", "A", "B", "C", "D"]
-        self.Vt = ["a", "b"]
-        self.P = {
-            "S": ["aB", "bA", "B"],
-            "A": ["b", "aD", "AS", "bAB", "ε"],
-            "B": ["a", "bS"],
-            "C": ["AB"],
-            "D": ["BB"]
-        }
+    def __init__(self, Vn, Vt, P):
+        self.Vn = Vn
+        self.Vt = Vt
+        self.P = P
 
     def eliminate_epsilon_productions(self):
         if self.check_for_epsilon_productions():
@@ -149,13 +143,19 @@ class ChomskyNormalForm:
                     true_char += len(temp_val)
                     while true_char > 2:
                         trans_chars = self.select_first_two_true_characters(value)
-                        created_transitions["X" + str(index)] = trans_chars
-                        self.Vn.append("X" + str(index))
-                        temp_copy[key].remove(value)
-                        value = value.replace(trans_chars, "X" + str(index), 1)
-                        temp_copy[key].append(value)
-                        index += 1
-                        true_char -= 1
+                        if trans_chars not in created_transitions.values():
+                            created_transitions["X" + str(index)] = trans_chars
+                            self.Vn.append("X" + str(index))
+                            temp_copy[key].remove(value)
+                            value = value.replace(trans_chars, "X" + str(index), 1)
+                            temp_copy[key].append(value)
+                            index += 1
+                            true_char -= 1
+                        else:
+                            temp_copy[key].remove(value)
+                            value = value.replace(trans_chars, next(key for key, val in created_transitions.items() if val == trans_chars), 1)
+                            temp_copy[key].append(value)
+                            true_char -= 1
 
         self.P = {**temp_copy, **created_transitions}
 
@@ -193,9 +193,40 @@ class ChomskyNormalForm:
         self.remove_inaccessible_symbols()
         self.remove_unproductive_symbols()
         self.chomsky_normal_form()
+        return self
 
-
-chomsky = ChomskyNormalForm()
+# VARIANT 20
+chomsky = ChomskyNormalForm(
+        ["S", "A", "B", "C", "D"],
+        ["a", "b"],
+        {
+            "S": ["aB", "bA", "B"],
+            "A": ["b", "aD", "AS", "bAB", "ε"],
+            "B": ["a", "bS"],
+            "C": ["AB"],
+            "D": ["BB"]
+        })
+# VARIANT 19
+# chomsky = ChomskyNormalForm(["S", "A", "B", "C", "E"],
+#             ["a", "d"],
+#             {
+#                 "S": ["dB", "B"],
+#                 "A": ["d", "dS", "aAdCB"],
+#                 "B": ["aC", "bA", "AC"],
+#                 "C": ["ε"],
+#                 "E": ["AS"]
+#             })
+# VARIANT 18
+# chomsky = ChomskyNormalForm(
+#         ["S", "A", "B", "C", "D"],
+#         ["a", "b"],
+#         {
+#             "S": ["aB", "bA", "A"],
+#             "A": ["B", "Sa", "bBA", "b"],
+#             "B": ["b", "bS", "aD", "ε"],
+#             "C": ["Ba"],
+#             "D": ["AA"]
+#         })
 print(chomsky.P)
 print(chomsky.Vn)
 chomsky.to_chomsky_normal_form()
