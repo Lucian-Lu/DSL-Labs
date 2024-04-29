@@ -177,7 +177,7 @@ class Lexer:
 #########################
 
 
-class NumberNode:
+        class NumberNode:
     def __init__(self, tok):
         self.tok = tok
 
@@ -318,12 +318,12 @@ class Parser:
 #########################
 class AST:
     def __init__(self, expression):
-        self.expression = expression
+        self.expression = str(expression)
 
     @staticmethod
     def hierarchy_pos(G, root=None, width=1., vert_gap=0.2, vert_loc=0, xcenter=0.5):
         '''
-        From Joel's answer at https://stackoverflow.com/a/29597209/2966723.
+        From Joel's answer at https ://stackoverflow.com/a/29597209/2966723.
         Licensed under Creative Commons Attribution-Share Alike
 
         If the graph is a tree this will return the positions to plot this in a
@@ -401,8 +401,7 @@ class AST:
         root = ''
         counters = {'PLUS': 0, 'MINUS': 0, 'MULT': 0, 'DIV': 0}
         pattern = r'(?:INT:\d+|FLOAT:\d+\.\d+|PLUS|MINUS|MULT|DIV|\(|\))'
-        data = "(((INT:5, PLUS, INT:43), PLUS, INT:32), PLUS, ((INT:4, MULT, INT:3), PLUS, INT:3))"
-        results = re.findall(pattern, data)
+        results = re.findall(pattern, self.expression)
 
         for i, result in enumerate(results):
             if result == '(':
@@ -450,7 +449,7 @@ def run(fn, text):
 
     parser = Parser(tokens)
     ast = parser.parse()
-    print(ast.node)
+    print(f'Parser result = {ast.node}')
     ast2 = AST(ast.node)
     ast2.generate_ast()
 
