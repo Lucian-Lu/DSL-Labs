@@ -177,7 +177,7 @@ class Lexer:
 #########################
 
 
-        class NumberNode:
+class NumberNode:
     def __init__(self, tok):
         self.tok = tok
 
